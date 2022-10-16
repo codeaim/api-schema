@@ -1,4 +1,4 @@
-#!/usr/bin/env npx ts-node
+#!/usr/bin/env ts-node
 
 import { OAS } from './oas';
 import { generateModel } from './generator/model';
