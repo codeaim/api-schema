@@ -310,6 +310,6 @@ export async function sdk(schema: OAS): Promise<string> {
     ${sdkMethods.join('\n\n')}
   }
   
-  export * from './model';
+  export * from './model.js';
 `;
 }
