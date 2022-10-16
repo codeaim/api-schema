@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: npm --no-git-tag-version version 0.0.${{ github.run_number }}
+      - run: npm --no-git-tag-version --allow-same-version version 0.0.${{ github.run_number }}
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
