@@ -1,0 +1,52 @@
+{
+  "name": "@codeaim/api-runner",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --single-quote --trailing-comma all --check './src/**.{ts,tsx}' './src/**/**.{ts,tsx}'",
+    "format:fix": "prettier --single-quote --trailing-comma all --write './src/**.{ts,tsx}' './src/**/**.{ts,tsx}'",
+    "lint": "eslint **/*.ts"
+  },
+  "bin": {
+    "api-runner": "src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeaim/api-runner"
+  },
+  "author": "codeaim",
+  "bugs": {
+    "url": "https://github.com/codeaim/api-runner/issues"
+  },
+  "dependencies": {
+    "@codeaim/api-builder": "^0.0.3",
+    "aws-lambda": "^1.0.7",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.0",
+    "@types/aws-lambda": "^8.10.107",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "eslint": "^8.24.0",
+    "prettier": "^2.7.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/no-explicit-any": 0,
+      "@typescript-eslint/no-non-null-assertion": 0,
+      "@typescript-eslint/ban-types": 0,
+      "@typescript-eslint/no-unused-vars": 0
+    }
+  }
+}
