@@ -15,6 +15,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci
+      - run: npm run build
       - run: npm pack
       - run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
       - run: npm publish --access public
