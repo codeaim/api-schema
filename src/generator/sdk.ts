@@ -126,6 +126,10 @@ function headerParamsParam(headerParameters: string[]): string | undefined {
     .join('; ')}}>`;
 }
 
+function configParamsParam(): string {
+  return 'config: Record<string, any>';
+}
+
 export function typeFrom(
   oas: OAS,
   response: OASResponse | OASRef,
@@ -225,13 +229,14 @@ function sdkMethod(
   const bodyParam = bodyFrom(oas, methodDefinition, imports);
   const queryParams = queryParamsParam(queryParameters);
   const multiQueryParams = multiQueryParamsParam(queryParameters);
+  const configParams = configParamsParam();
   const params = [
     pathParams,
     bodyParam && `body: ${bodyParam}`,
     queryParams,
     multiQueryParams,
     headerParams + ' = {}',
-    `{}`
+    configParams + ' = {}',
   ].filter((it) => !!it);
   const resourcePath = path.replace(/{/g, '${params.');
   const methodName =
