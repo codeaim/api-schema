@@ -231,6 +231,7 @@ function sdkMethod(
     queryParams,
     multiQueryParams,
     headerParams + ' = {}',
+    `{}`
   ].filter((it) => !!it);
   const resourcePath = path.replace(/{/g, '${params.');
   const methodName =
@@ -246,7 +247,7 @@ function sdkMethod(
     bodyParam ? 'JSON.stringify(body)' : 'undefined'
   }, ${pathParams ? 'params' : '{}'}, ${
     queryParams ? 'queryParameters' : '{}'
-  }, ${multiQueryParams ? 'multiQueryParameters' : '{}'}, headers);
+  }, ${multiQueryParams ? 'multiQueryParameters' : '{}'}, headers, config);
       ${bodyValue(oas, methodDefinition)}
       throw new Error(\`Unknown status \${result.statusCode} returned from \${path}\`)
     }`;
@@ -298,7 +299,7 @@ export async function sdk(schema: OAS): Promise<string> {
       queryParameters: Record<string, string>,
       multiQueryParameters: Record<string, string[]>,
       headers: Record<string, string>,
-      uri?: string
+      config?: Record<string, string>,
     ): Promise<{ statusCode: number; body: string; headers: Record<string, string> }>;
   }
   
