@@ -124,7 +124,7 @@ export interface OASOperation {
   operationId?: string;
   parameters?: Array<OASParameter | OASRef>;
   requestBody?: OASRequestBody | OASRef;
-  responses: { [statusCode: string]: OASResponse | OASRef };
+  responses?: { [statusCode: string]: OASResponse | OASRef };
   callbacks?: { [key: string]: OASPath | OASRef };
   deprecated?: boolean;
   security?: OASSecurity[];
