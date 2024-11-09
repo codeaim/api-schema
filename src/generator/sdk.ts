@@ -8,7 +8,7 @@ import {
   OASResponse,
 } from '../oas';
 import fs from 'fs';
-import { compile, JSONSchema } from 'json-schema-to-typescript';
+import { JSONSchema } from 'json-schema-to-typescript';
 
 export async function generateSdk(schema: OAS) {
   const dir =
@@ -166,8 +166,8 @@ function returnType(oas: OAS, method: OASOperation, imports: string[]): string {
 function ifCode(code: string, json: boolean): string {
   return `if(result.statusCode === ${code}) {
         return { statusCode: ${code}, headers: result.headers, result: ${
-    json ? `JSON.parse(result.body)` : 'result.body'
-  }  };
+          json ? 'JSON.parse(result.body)' : 'result.body'
+        }  };
       }`;
 }
 
@@ -249,10 +249,10 @@ function sdkMethod(
       const resource = '${path}';
       const path = \`${resourcePath}\`;
       const result = await this.caller.call('${method.toUpperCase()}', resource, path, ${
-    bodyParam ? 'JSON.stringify(body)' : 'undefined'
-  }, ${pathParams ? 'params' : '{}'}, ${
-    queryParams ? 'queryParameters' : '{}'
-  }, ${multiQueryParams ? 'multiQueryParameters' : '{}'}, headers, config);
+        bodyParam ? 'JSON.stringify(body)' : 'undefined'
+      }, ${pathParams ? 'params' : '{}'}, ${
+        queryParams ? 'queryParameters' : '{}'
+      }, ${multiQueryParams ? 'multiQueryParameters' : '{}'}, headers, config);
       ${bodyValue(oas, methodDefinition)}
       throw new Error(\`Unknown status \${result.statusCode} returned from \${path}\`)
     }`;

@@ -1,6 +1,6 @@
 import { OAS } from '../oas';
 import fs from 'fs';
-import { compile, JSONSchema } from 'json-schema-to-typescript';
+import { jsonSchemaToZod } from 'json-schema-to-zod';
 
 export async function generateModel(schema: OAS) {
   const dir =
@@ -11,11 +11,16 @@ export async function generateModel(schema: OAS) {
 
 export async function models(oas: OAS): Promise<string> {
   const schemas = oas.components?.schemas ?? {};
-  const fakeSchema: JSONSchema = {
-    anyOf: Object.keys(schemas).map((it) => ({
-      $ref: '#/components/schemas/' + it,
-    })),
-    components: { schemas },
-  };
-  return await compile(fakeSchema, '__ALL__', { bannerComment: '' });
+  return `
+    ${Object.keys(schemas)
+      .map((it, index) =>
+        jsonSchemaToZod(schemas[it], {
+          module: 'esm',
+          name: it,
+          type: true,
+          noImport: index !== 0,
+        }),
+      )
+      .join('\n ')}
+  `;
 }

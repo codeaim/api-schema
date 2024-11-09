@@ -1,57 +1,53 @@
 {
   "name": "@codeaim/api-schema",
   "version": "0.0.1",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "type": "module",
-  "scripts": {
-    "build": "npm run format:fix && tsc --project tsconfig.json",
-    "format": "prettier --single-quote --trailing-comma all --check './src/**.{ts,tsx}' './src/**/**.{ts,tsx}'",
-    "format:fix": "prettier --single-quote --trailing-comma all --write './src/**.{ts,tsx}' './src/**/**.{ts,tsx}'",
-    "lint": "eslint **/*.ts"
-  },
-  "bin": {
-    "api-schema": "src/generate.ts"
+  "bugs": {
+    "url": "https://github.com/codeaim/api-schema/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codeaim/api-schema"
   },
   "author": "codeaim",
-  "bugs": {
-    "url": "https://github.com/codeaim/api-schema/issues"
+  "type": "module",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "bin": {
+    "api-schema": "src/generate.ts"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "scripts": {
+    "build": "npm run format:fix && tsc --project tsconfig.json",
+    "format": "prettier --single-quote --trailing-comma all --check './**.ts' './src/**.ts' './src/**/**.ts'",
+    "format:fix": "prettier --single-quote --trailing-comma all --write './**.ts' './src/**.ts' './src/**/**.ts'",
+    "lint": "eslint --flag unstable_ts_config .",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "dependencies": {
-    "json-schema-to-typescript": "^13.1.2",
     "@codeaim/api-builder": "^0.0.7",
-    "aws-lambda": "^1.0.7"
+    "aws-lambda": "^1.0.7",
+    "json-schema-to-typescript": "^15.0.3",
+    "json-schema-to-zod": "^2.4.1"
   },
   "devDependencies": {
-    "tsx": "^4.1.2",
-    "@types/node": "^18.11.0",
-    "@types/aws-lambda": "^8.10.107",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "eslint": "^8.24.0",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
-  },
-  "eslintConfig": {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/no-explicit-any": 0,
-      "@typescript-eslint/no-non-null-assertion": 0,
-      "@typescript-eslint/ban-types": 0,
-      "@typescript-eslint/no-unused-vars": 0
-    }
+    "@types/aws-lambda": "^8.10.145",
+    "@types/eslint": "^9.6.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.9.0",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "eslint": "^9.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "jest": "^29.7.0",
+    "jiti": "^2.4.0",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "zod": "^3.23.8"
   }
 }
