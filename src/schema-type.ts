@@ -35,7 +35,7 @@ type Ref<S, R extends string> = R extends `${infer Start}/${infer Rest}`
     : never;
 type FromProps<S, O = S> = S extends { properties: any }
   ? { -readonly [K in keyof S['properties']]: Schema<S['properties'][K], O> }
-  : {};
+  : object;
 type FromArray<S, O = S> = S extends { items: readonly any[] }
   ? FromTuple<S['items'], O>
   : S extends { items: any }
@@ -336,7 +336,7 @@ export class SchemaBuilder<T extends { components: { schemas: any } }> {
     }) as any;
   }
 
-  static create(): SchemaBuilder<{ components: { schemas: {} } }> {
+  static create(): SchemaBuilder<{ components: { schemas: object } }> {
     return new SchemaBuilder({ components: { schemas: {} } });
   }
 }
