@@ -17,8 +17,11 @@ export async function generate(schemaPath: string): Promise<void> {
   ]);
 }
 
+console.log("Starting schema generation");
 if (process.argv[1] === new URL(import.meta.url).pathname) {
+
   const schemaPath = process.argv[2];
+  console.log("Running schema generation", schemaPath);
   if (!schemaPath) {
     console.error('Error: No schema file provided.');
     process.exit(1);
@@ -27,4 +30,5 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
     console.error('Error during generation:', err);
     process.exit(1);
   });
+  console.log("Finished schema generation");
 }
