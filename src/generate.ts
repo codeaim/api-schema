@@ -1,6 +1,7 @@
 #!/usr/bin/env npx tsx
 
 import { fileURLToPath } from 'url';
+import { resolve } from 'path';
 import { OAS } from './oas';
 import { generateModel } from './generator/model';
 import { generateApi } from './generator/api';
@@ -19,7 +20,7 @@ export async function generate(schemaPath: string): Promise<void> {
 }
 
 console.log("Schema generation");
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url))) {
   console.log("Starting schema generation");
   const schemaPath = process.argv[2];
   console.log("Running schema generation", schemaPath);
