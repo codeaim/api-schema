@@ -13,7 +13,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "bin": {
-    "api-schema": "src/generate.ts"
+    "api-schema": "src/runner.ts"
   },
   "prettier": {
     "singleQuote": true
@@ -24,7 +24,7 @@
     "format:fix": "prettier --single-quote --trailing-comma all --write './**.ts' './src/**.ts' './src/**/**.ts'",
     "lint": "eslint --flag unstable_ts_config .",
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-    "start": "src/generate.ts $(pwd)/src/test/exampleSpecification.ts"
+    "start": "api-schema $(pwd)/src/test/exampleSpecification.ts"
   },
   "dependencies": {
     "@codeaim/api-builder": "^0.0.7",
