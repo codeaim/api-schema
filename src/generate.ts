@@ -1,5 +1,6 @@
 #!/usr/bin/env npx tsx
 
+import { fileURLToPath } from 'url';
 import { OAS } from './oas';
 import { generateModel } from './generator/model';
 import { generateApi } from './generator/api';
@@ -17,9 +18,9 @@ export async function generate(schemaPath: string): Promise<void> {
   ]);
 }
 
-console.log("Starting schema generation");
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-
+console.log("Schema generation");
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  console.log("Starting schema generation");
   const schemaPath = process.argv[2];
   console.log("Running schema generation", schemaPath);
   if (!schemaPath) {
@@ -30,5 +31,5 @@ if (process.argv[1] === new URL(import.meta.url).pathname) {
     console.error('Error during generation:', err);
     process.exit(1);
   });
-  console.log("Finished schema generation");
+  console.log("Finished schema generation", schemaPath);
 }
