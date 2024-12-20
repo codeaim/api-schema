@@ -15,16 +15,16 @@
   "bin": {
     "api-schema": "src/runner.ts"
   },
-  "prettier": {
-    "singleQuote": true
-  },
   "scripts": {
     "build": "npm run format:fix && tsc --project tsconfig.json",
     "format": "prettier --single-quote --trailing-comma all --check './**.ts' './src/**.ts' './src/**/**.ts'",
     "format:fix": "prettier --single-quote --trailing-comma all --write './**.ts' './src/**.ts' './src/**/**.ts'",
     "lint": "eslint .",
-    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
-    "start": "api-schema $(pwd)/src/test/exampleSpecification.ts"
+    "start": "api-schema $(pwd)/src/test/exampleSpecification.ts",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
+  },
+  "prettier": {
+    "singleQuote": true
   },
   "dependencies": {
     "@codeaim/api-builder": "^0.0.11",
