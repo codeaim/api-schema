@@ -1,4 +1,4 @@
-#!/usr/bin/env tsx
+#!/usr/bin/env npx tsx
 
 import { OAS } from './oas';
 import { generateModel } from './generator/model';
