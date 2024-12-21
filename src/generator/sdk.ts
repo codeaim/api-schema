@@ -261,7 +261,7 @@ function sdkMethod(
 export async function sdk(schema: OAS): Promise<string> {
   const name = schema.info.title.replace(/ /g, '') + 'Sdk';
   const paths = pathsFrom(schema);
-  const imports = new Array<string>();
+  const imports: string[] = [];
   const sdkMethods = paths.flatMap(({ path, definition }) => {
     if (definition) {
       return methodOperations(definition).map(
