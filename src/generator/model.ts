@@ -12,7 +12,7 @@ export async function generateModel(schema: OAS) {
 export async function models(oas: OAS): Promise<string> {
   const schemas = oas.components?.schemas ?? {};
 
-    return `
+  return `
     ${Object.keys(schemas)
       .map((it, index) =>
         jsonSchemaToZod(schemas[it], {
@@ -21,9 +21,18 @@ export async function models(oas: OAS): Promise<string> {
           type: true,
           noImport: index !== 0,
         }),
-      ).join('\n ')}
+      )
+      .join('\n ')}
  
-export const operationIds = [${Object.entries(oas.paths).flatMap(([_, methods]) => Object.values(methods).map((operation) => `"${operation.operationId}"`).join(','))}] as const;
-export type OperationId = typeof operationIds[number];
+export const operationIds = [${Object.entries(oas.paths).flatMap(
+    ([, methods]) =>
+      Object.values(methods)
+        .map((operation) => `"${operation.operationId}"`)
+        .join(','),
+  )}] as const;
+  
+export const OperationId = Object.fromEntries(
+  operationIds.map(id => [id, id])
+) as Record<typeof operationIds[number], typeof operationIds[number]>; 
 `;
 }
