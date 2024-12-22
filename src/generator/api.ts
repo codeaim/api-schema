@@ -49,6 +49,21 @@ export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
           CorsFilter('*')
       )(event);
     }
+    
+    ${operations
+      .map(
+  ({ operationId }) =>
+      `async ${operationId}Handle(event: APIGatewayProxyEvent) {
+        return filters(
+            routes(
+                this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))
+            ),
+            LoggingFilter((msg) => console.log(msg)),
+            CorsFilter('*')
+        )(event);
+      }`,
+      )
+      .join('\n\n  ')}
 }
 `;
 }
