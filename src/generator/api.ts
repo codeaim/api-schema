@@ -52,11 +52,11 @@ export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
     
     ${operations
       .map(
-        ({ operationId }) =>
+        ({ operationId, operation, path }) =>
           `${operationId}Handler = async (event: APIGatewayProxyEvent) => {
         return filters(
             routes(
-                this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))
+                route('${path}', bind(HttpMethod.${operation.toUpperCase()}, this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))))
             ),
             LoggingFilter((msg) => console.log(msg)),
             CorsFilter('*')
