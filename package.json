@@ -27,7 +27,7 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@codeaim/api-builder": "^0.0.11",
+    "@codeaim/api-builder": "^0.0.13",
     "aws-lambda": "^1.0.7",
     "json-schema-to-typescript": "^15.0.3",
     "json-schema-to-zod": "^2.5.0"

@@ -42,7 +42,7 @@ export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
       ];
     }
   
-    async handle(event: APIGatewayProxyEvent) {
+    handler = async (event: APIGatewayProxyEvent) => {
       return filters(
           routes(...this.apiRoutes()),
           LoggingFilter((msg) => console.log(msg)),
@@ -52,8 +52,8 @@ export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
     
     ${operations
       .map(
-  ({ operationId }) =>
-      `async ${operationId}Handle(event: APIGatewayProxyEvent) {
+        ({ operationId }) =>
+          `${operationId}Handler = async (event: APIGatewayProxyEvent) => {
         return filters(
             routes(
                 this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))
