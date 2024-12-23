@@ -13,6 +13,8 @@ export async function models(oas: OAS): Promise<string> {
   const schemas = oas.components?.schemas ?? {};
 
   return `
+import {HttpMethod} from "@codeaim/api-builder";
+
     ${Object.keys(schemas)
       .map((it, index) =>
         jsonSchemaToZod(schemas[it], {
@@ -23,7 +25,15 @@ export async function models(oas: OAS): Promise<string> {
         }),
       )
       .join('\n ')}
- 
+
+export const paths = [${Object.keys(oas.paths).map((path) => `"${path}"`)}] as const;
+
+export const Path = Object.fromEntries(
+  paths.map(id => [id, id])
+) as Record<typeof paths[number], typeof paths[number]>;
+
+export type Path = keyof typeof Path;
+
 export const operationIds = [${Object.entries(oas.paths).flatMap(
     ([, methods]) =>
       Object.values(methods)
@@ -33,6 +43,22 @@ export const operationIds = [${Object.entries(oas.paths).flatMap(
   
 export const OperationId = Object.fromEntries(
   operationIds.map(id => [id, id])
-) as Record<typeof operationIds[number], typeof operationIds[number]>; 
+) as Record<typeof operationIds[number], typeof operationIds[number]>;
+
+export type OperationId = keyof typeof OperationId;
+
+export type Operation = { 
+  path: Path; 
+  method: HttpMethod; 
+  operationId: OperationId;
+}
+
+export const operations: Operation[] = [${Object.entries(oas.paths).flatMap(
+    ([path, methods]) =>
+      Object.entries(methods).map(
+        ([method, operation]) =>
+          `{ path: Path["${path}"], method: HttpMethod.${method.toUpperCase()}, operationId: OperationId.${operation.operationId} }`,
+      ),
+  )}] as const;
 `;
 }
