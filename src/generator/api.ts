@@ -17,6 +17,8 @@ export async function api(schema: OAS): Promise<string> {
     })),
   );
   return `
+import middy from '@middy/core'
+import cors from '@middy/http-cors'
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {ApiHandler, HttpMethod, bind, route, routes, filters, LoggingFilter, CorsFilter} from '@codeaim/api-builder';
 
@@ -53,13 +55,7 @@ export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
     ${operations
       .map(
         ({ operationId }) =>
-          `${operationId}Handler = async (event: APIGatewayProxyEvent) => {
-        return filters(
-            this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})),
-            LoggingFilter((msg) => console.log(msg)),
-            CorsFilter('*')
-        )(event);
-      }`,
+          `${operationId}Handler = middy().use(cors()).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
       )
       .join('\n\n  ')}
 }
