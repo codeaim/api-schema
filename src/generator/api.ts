@@ -20,6 +20,7 @@ export async function api(schema: OAS): Promise<string> {
 import middy, {MiddlewareObj} from '@middy/core'
 import cors from '@middy/http-cors'
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
+import {HttpMethod, bind, route, routes} from '@codeaim/api-builder';
 
 export interface ${schema.info.title.replace(/ /g, '')}Handlers {
     ${operations
@@ -40,6 +41,18 @@ export class ${schema.info.title.replace(/ /g, '')} {
     filters: Partial<${schema.info.title.replace(/ /g, '')}Filters> = {
         global: [cors()]
     };
+    
+    apiRoutes() {
+      return [${operations
+        .map(
+          ({ operationId, operation, path }) => `
+        route('${path}', bind(HttpMethod.${operation.toUpperCase()}, this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))))`,
+        )
+        .join(',')}
+      ];
+    }
+    
+    handler = middy().use([...this.filters.global]).handler(routes(...this.apiRoutes()));
     
     ${operations
       .map(
