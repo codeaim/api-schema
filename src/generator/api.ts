@@ -17,10 +17,9 @@ export async function api(schema: OAS): Promise<string> {
     })),
   );
   return `
-import middy from '@middy/core'
+import middy, {MiddlewareObj} from '@middy/core'
 import cors from '@middy/http-cors'
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
-import {ApiHandler, HttpMethod, bind, route, routes, filters, LoggingFilter, CorsFilter} from '@codeaim/api-builder';
 
 export interface ${schema.info.title.replace(/ /g, '')}Handlers {
     ${operations
@@ -31,31 +30,21 @@ export interface ${schema.info.title.replace(/ /g, '')}Handlers {
       .join('\n    ')}
 }
 
-export class ${schema.info.title.replace(/ /g, '')} implements ApiHandler {
+export interface ${schema.info.title.replace(/ /g, '')}Filters {
+    global: MiddlewareObj[];
+    ${operations.map(({ operationId }) => `${operationId}: MiddlewareObj[];`).join('\n    ')}
+}
+
+export class ${schema.info.title.replace(/ /g, '')} {
     handlers: Partial<${schema.info.title.replace(/ /g, '')}Handlers> = {};
-    
-    apiRoutes() {
-      return [${operations
-        .map(
-          ({ operationId, operation, path }) => `
-        route('${path}', bind(HttpMethod.${operation.toUpperCase()}, this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))))`,
-        )
-        .join(',')}
-      ];
-    }
-  
-    handler = async (event: APIGatewayProxyEvent) => {
-      return filters(
-          routes(...this.apiRoutes()),
-          LoggingFilter((msg) => console.log(msg)),
-          CorsFilter('*')
-      )(event);
-    }
+    filters: Partial<${schema.info.title.replace(/ /g, '')}Filters> = {
+        global: [cors()]
+    };
     
     ${operations
       .map(
         ({ operationId }) =>
-          `${operationId}Handler = middy().use(cors()).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
+          `${operationId}Handler = middy().use([...this.filters.global, ...this.filters.${operationId}]).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
       )
       .join('\n\n  ')}
 }

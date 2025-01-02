@@ -13,8 +13,6 @@ export async function models(oas: OAS): Promise<string> {
   const schemas = oas.components?.schemas ?? {};
 
   return `
-import {HttpMethod} from "@codeaim/api-builder";
-
     ${Object.keys(schemas)
       .map((it, index) =>
         jsonSchemaToZod(schemas[it], {
@@ -49,7 +47,7 @@ export type OperationId = keyof typeof OperationId;
 
 export type Operation = { 
   path: Path; 
-  method: HttpMethod; 
+  method: string;
   operationId: OperationId;
 }
 
@@ -57,7 +55,7 @@ export const operations: Operation[] = [${Object.entries(oas.paths).flatMap(
     ([path, methods]) =>
       Object.entries(methods).map(
         ([method, operation]) =>
-          `{ path: Path["${path}"], method: HttpMethod.${method.toUpperCase()}, operationId: OperationId.${operation.operationId} }`,
+          `{ path: Path["${path}"], method: "${method.toUpperCase()}", operationId: OperationId.${operation.operationId} }`,
       ),
   )}] as const;
 `;
