@@ -57,7 +57,7 @@ export class ${schema.info.title.replace(/ /g, '')} {
     ${operations
       .map(
         ({ operationId }) =>
-          `${operationId}Handler = middy().use([...this.filters.global, ...this.filters.${operationId}]).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
+          `${operationId}Handler = middy().use([...(this.filters.global || []), ...(this.filters.${operationId} || [])]).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
       )
       .join('\n\n  ')}
 }
