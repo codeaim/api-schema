@@ -19,7 +19,6 @@ export async function api(schema: OAS): Promise<string> {
   return `
 import middy, { MiddlewareObj } from '@middy/core'
 import cors from '@middy/http-cors'
-import httpRouterHandler, { Method } from '@middy/http-router'
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export interface ${schema.info.title.replace(/ /g, '')}Handlers {
@@ -53,16 +52,13 @@ export class ${schema.info.title.replace(/ /g, '')} {
       .map(
         ({ operationId, operation, path }) =>
           `{
-              method: '${operation.toUpperCase()}' as Method,
+              method: '${operation.toUpperCase()}',
               path: '${path}',
-              handler: this.${operationId}Handler
+              handler: '${operationId}Handler'
            }`,
       )
       .join(',')}
    ]
-   
-   handler = middy().handler(httpRouterHandler(this.routes))
-    
 }
 `;
 }
