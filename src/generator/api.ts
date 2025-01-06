@@ -36,18 +36,11 @@ export interface ${schema.info.title.replace(/ /g, '')}Filters {
 }
 
 export class ${schema.info.title.replace(/ /g, '')} {
-    handlers: Partial<${schema.info.title.replace(/ /g, '')}Handlers> = {};
-    filters: Partial<${schema.info.title.replace(/ /g, '')}Filters> = {
-        global: [cors()]
-    };
-    
-    ${operations
-      .map(
-        ({ operationId }) =>
-          `${operationId}Handler = middy().use([...(this.filters.global || []), ...(this.filters.${operationId} || [])]).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
-      )
-      .join('\n\n  ')}
-    
+    handlers: () => Partial<${schema.info.title.replace(/ /g, '')}Handlers> = () => ({});
+    filters: () => Partial<${schema.info.title.replace(/ /g, '')}Filters> = () => ({
+        global: [cors()],
+    });
+
     routes = [${operations
       .map(
         ({ operationId, operation, path }) =>
@@ -59,6 +52,32 @@ export class ${schema.info.title.replace(/ /g, '')} {
       )
       .join(',')}
    ]
+   
+   constructor() {
+        return new Proxy(this, {
+            get: (api, property: string) => {
+                if (property.endsWith('Handler')) {
+                    if (!api[property]) {
+                        const handler = property.slice(0, -7);
+                        const handlers = api.handlers();
+                        const filters = api.filters();
+                        api[property] = middy(
+                            handlers[handler]?.bind(api) ??
+                            (async () => ({
+                                statusCode: 501,
+                                body: JSON.stringify({ message: 'Not Implemented' }),
+                            }))
+                        ).use([
+                            ...(filters.global || []),
+                            ...(filters[property] || []),
+                        ]);
+                    }
+                    return api[property];
+                }
+                return api[property];
+            },
+        });
+    }
 }
 `;
 }
