@@ -17,10 +17,10 @@ export async function api(schema: OAS): Promise<string> {
     })),
   );
   return `
-import middy, {MiddlewareObj} from '@middy/core'
+import middy, { MiddlewareObj } from '@middy/core'
 import cors from '@middy/http-cors'
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
-import {HttpMethod, bind, route, routes} from '@codeaim/api-builder';
+import httpRouterHandler, { Method } from '@middy/http-router'
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export interface ${schema.info.title.replace(/ /g, '')}Handlers {
     ${operations
@@ -42,24 +42,27 @@ export class ${schema.info.title.replace(/ /g, '')} {
         global: [cors()]
     };
     
-    apiRoutes() {
-      return [${operations
-        .map(
-          ({ operationId, operation, path }) => `
-        route('${path}', bind(HttpMethod.${operation.toUpperCase()}, this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })}))))`,
-        )
-        .join(',')}
-      ];
-    }
-    
-    handler = middy().use([...this.filters.global]).handler(routes(...this.apiRoutes()));
-    
     ${operations
       .map(
         ({ operationId }) =>
           `${operationId}Handler = middy().use([...(this.filters.global || []), ...(this.filters.${operationId} || [])]).handler(this.handlers.${operationId}?.bind(this) ?? (async () => ({statusCode: 501, body: JSON.stringify({ message: "Not Implemented" })})))`,
       )
       .join('\n\n  ')}
+    
+    routes = [${operations
+      .map(
+        ({ operationId, operation, path }) =>
+          `{
+              method: '${operation.toUpperCase()}' as Method,
+              path: '${path}',
+              handler: this.${operationId}Handler
+           }`,
+      )
+      .join(',')}
+   ]
+   
+   handler = middy().handler(httpRouterHandler(this.routes))
+    
 }
 `;
 }
