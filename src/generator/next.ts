@@ -140,19 +140,22 @@ function renderHandlerBody(
     const url = new URL(req.url);
     const singles: Record<string,string> = {};
     const multis: Record<string,string[]> = {};
-    for (const key of url.searchParams.keys()) {
+    for (const key of Array.from(url.searchParams.keys())) {
       const all = url.searchParams.getAll(key);
-      if (all.length > 1) multis[key] = all;
-      else singles[key] = all[0]!;
+      if (all.length > 1) {
+        multis[key] = all;
+      } else if (all.length === 1) {
+        singles[key] = all[0]!;
+      }
     }
   `
     : ``;
 
   const readHeaders = `
     const fwdHeaders: Record<string,string> = {};
-    for (const [k, v] of req.headers.entries()) {
-      fwdHeaders[k] = v;
-    }
+    req.headers.forEach((value, key) => {
+      fwdHeaders[key] = value;
+    });
   `;
 
   const call = `
