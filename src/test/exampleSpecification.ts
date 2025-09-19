@@ -37,7 +37,6 @@ const tenderNiApi = OpenApiSpecificationBuilder.create(exampleSchemas, {
     '/contact': {
       post: {
         operationId: 'postMessage',
-        parameters: [o.parameter('id', 'path', true)],
         requestBody: { content: o.jsonContent('Message') },
         responses: {
           201: o.response(o.textContent()),
