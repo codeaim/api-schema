@@ -152,11 +152,21 @@ function renderHandlerBody(
     : ``;
 
   const readHeaders = `
-    const fwdHeaders: Record<string,string> = {};
-    req.headers.forEach((value, key) => {
-      fwdHeaders[key] = value;
-    });
-  `;
+  const ALLOW_HEADERS = new Set([
+    "authorization",
+    "accept",
+    "content-type",
+    "x-request-id",
+    "x-correlation-id",
+    "user-agent"
+  ]);
+  const fwdHeaders: Record<string,string> = {};
+  req.headers.forEach((value, key) => {
+    if (ALLOW_HEADERS.has(key.toLowerCase())) fwdHeaders[key] = value;
+  });
+  if (!fwdHeaders["accept"]) fwdHeaders["accept"] = "application/json";
+  if (!fwdHeaders["user-agent"]) fwdHeaders["user-agent"] = "generated-next-proxy/1.0";
+`;
 
   const call = `
     const sdk = sdkf();
