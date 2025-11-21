@@ -90,7 +90,7 @@ export interface EndpointConfig {
   authorizerId?: string;
 }
 
-export function createEndpoints(isProd: boolean, environment: string): EndpointConfig[] {
+export function createEndpoints(isProd: boolean, environment: string, jwtAuthorizer: any, apiKeyAuthorizer: any): EndpointConfig[] {
   const suffix = isProd ? '' : \`-\${environment}\`;
 
   return [
