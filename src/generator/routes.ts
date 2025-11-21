@@ -75,7 +75,7 @@ function routes(oas: OAS): string {
           '      }',
         ]
           .filter(Boolean)
-          .join('\n')
+          .join('\n'),
       );
     }
   }
